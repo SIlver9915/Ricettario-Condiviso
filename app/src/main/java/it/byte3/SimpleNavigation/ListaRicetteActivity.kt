@@ -53,27 +53,35 @@ class ListaRicetteActivity : AppCompatActivity() {
             }
         }
     }
+    override fun onResume() {
+        super.onResume()
+        caricaRicette()
+    }
+
 
     private fun eliminaRicetta(ricetta: Ricetta) {
         lifecycleScope.launch {
             try {
-                // Chiamata DELETE all'API
-                RetrofitClient.api.deleteRicetta(
+                val response = RetrofitClient.api.deleteRicetta(
                     apiKey = API_KEY,
                     auth = "Bearer $API_KEY",
-                    id = "eq.${ricetta.id}"  // attenzione, Supabase usa "eq.<id>"
+                    id = "eq.${ricetta.id}"
                 )
 
-                // Ricarica la lista aggiornata
-                caricaRicette()
+                if (response.isSuccessful) {
+                    caricaRicette() // ✅ tienila
+                    Toast.makeText(this@ListaRicetteActivity, "Ricetta eliminata", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@ListaRicetteActivity, "Errore eliminazione", Toast.LENGTH_SHORT).show()
+                }
 
-                Toast.makeText(this@ListaRicetteActivity, "Ricetta eliminata", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(this@ListaRicetteActivity, "Errore eliminazione", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ListaRicetteActivity, "Errore di rete", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
 
 }

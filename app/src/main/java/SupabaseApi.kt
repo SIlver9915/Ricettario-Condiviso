@@ -1,4 +1,5 @@
 import retrofit2.http.*
+import retrofit2.Response
 interface SupabaseApi {
     // Leggi tutte le ricette, ordinate per data di creazione
     @GET("rest/v1/ricette?order=created_at.desc")
@@ -21,5 +22,5 @@ interface SupabaseApi {
         @Header("apikey") apiKey: String,
         @Header("Authorization") auth: String,
         @Query("id") id: String // es: "eq.42"
-    )
+    ): Response<Unit>
 }
